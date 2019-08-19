@@ -1,5 +1,6 @@
 import { action, isObservableArray, isObservableObject } from "mobx"
 import { Frozen } from "../frozen/Frozen"
+import { Simple } from "../simple"
 import { getModelInfoForObject } from "../model/modelInfo"
 import { ParentPath } from "../parent/path"
 import { setParent } from "../parent/setParent"
@@ -9,6 +10,7 @@ import { tweakArray } from "./tweakArray"
 import { tweakFrozen } from "./tweakFrozen"
 import { tweakModel } from "./tweakModel"
 import { tweakPlainObject } from "./tweakPlainObject"
+import { tweakSimple } from "./tweakSimple"
 
 /**
  * Turns an object (array, plain object) into a tree node,
@@ -44,6 +46,10 @@ function internalTweak<T>(value: T, parentPath: ParentPath<any> | undefined): T 
 
   if ((value as any) instanceof Frozen) {
     return tweakFrozen(value, parentPath)
+  }
+
+  if ((value as any) instanceof Simple) {
+    return tweakSimple(value, parentPath)
   }
 
   const modelInfo = getModelInfoForObject(value)

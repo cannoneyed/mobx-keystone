@@ -1,5 +1,6 @@
 import { action, observable, set } from "mobx"
 import { frozen, isFrozenSnapshot } from "../frozen/Frozen"
+import { isSimpleSnapshot } from "../simple"
 import { AnyModel } from "../model/BaseModel"
 import { isReservedModelKey, modelTypeKey } from "../model/metadata"
 import { getModelInfoForName } from "../model/modelInfo"
@@ -46,6 +47,11 @@ function internalFromSnapshot<T>(sn: SnapshotInOf<T> | SnapshotOutOf<T>): T {
 
   if (isFrozenSnapshot(sn)) {
     return frozen(sn.data) as any
+  }
+
+  if (isSimpleSnapshot(sn)) {
+    const data = sn.data
+    return sn.fromSnapshot(data) as any
   }
 
   if (isModelSnapshot(sn)) {

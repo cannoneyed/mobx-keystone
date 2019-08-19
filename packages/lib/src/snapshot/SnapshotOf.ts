@@ -1,4 +1,5 @@
 import { Frozen, frozenKey } from "../frozen/Frozen"
+import { Simple, simpleKey } from "../simple"
 import { modelTypeKey } from "../model"
 import { AnyModel, ModelCreationData, ModelData } from "../model/BaseModel"
 import { ArraySet, ObjectMap } from "../wrappers"
@@ -21,6 +22,14 @@ export type SnapshotOutOfModel<M extends AnyModel> = SnapshotOutOfObject<ModelDa
 export type SnapshotOutOfFrozen<F extends Frozen<any>> = {
   [frozenKey]: true
   data: F["data"]
+}
+
+export type SnapshotOutOfSimple<S extends object> = {
+  [simpleKey]: true
+  data: {
+    [k in keyof S]: SnapshotOutOf<S[k]> extends infer R ? R : never
+  }
+  fromSnapshot: (sn: S) => Simple<S>
 }
 
 export interface SnapshotOutOfObjectMap<V> {
@@ -57,6 +66,10 @@ export type SnapshotOutOf<T> = T extends Array<infer U>
   ? SnapshotOutOfFrozen<T> extends infer R
     ? R
     : never
+  : T extends Simple<infer S>
+  ? SnapshotOutOfSimple<S> extends infer R
+    ? R
+    : never
   : T extends object
   ? SnapshotOutOfObject<T> extends infer R
     ? R
@@ -81,6 +94,14 @@ export type SnapshotInOfModel<M extends AnyModel> = SnapshotInOfObject<
 export type SnapshotInOfFrozen<F extends Frozen<any>> = {
   [frozenKey]: true
   data: F["data"]
+}
+
+export type SnapshotInOfSimple<S extends object> = {
+  [simpleKey]: true
+  data: {
+    [k in keyof S]: SnapshotOutOf<S[k]> extends infer R ? R : never
+  }
+  fromSnapshot: (sn: any) => Simple<S>
 }
 
 export interface SnapshotInOfObjectMap<V> {
@@ -115,6 +136,10 @@ export type SnapshotInOf<T> = T extends Array<infer U>
     : never
   : T extends Frozen<any>
   ? SnapshotInOfFrozen<T> extends infer R
+    ? R
+    : never
+  : T extends Simple<infer S>
+  ? SnapshotInOfSimple<S> extends infer R
     ? R
     : never
   : T extends object

@@ -20,6 +20,7 @@ export function getSnapshot<T>(nodeOrPrimitive: T): SnapshotOutOf<T> {
   assertTweakedObject(nodeOrPrimitive, "nodeOrPrimitive")
 
   const snapshot = getInternalSnapshot(nodeOrPrimitive as any)
+
   if (!snapshot) {
     throw failure("getSnapshot is not supported for this kind of object")
   }
