@@ -6,6 +6,7 @@ import {
   ObservableMap,
   ObservableSet,
 } from "mobx"
+import { Simple } from "../simple"
 
 /**
  * A mobx-keystone error.
@@ -83,6 +84,13 @@ export function isPrimitive(value: any): value is number | string | boolean | un
     default:
       return true
   }
+}
+
+/**
+ * @ignore
+ */
+export function isSimple<S extends object>(value: any): value is Simple<S> {
+  return value instanceof Simple
 }
 
 /**

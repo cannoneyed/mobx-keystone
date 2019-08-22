@@ -17,7 +17,7 @@ export function tweakSimple<S extends object, T extends Simple<S>>(
   setInternalSnapshot(simpleObj, {
     [simpleKey]: true,
     data: simpleObj.toSnapshot(),
-    fromSnapshot: simpleObj.fromSnapshot,
+    fromSnapshot: (simpleObj.constructor as any).fromSnapshot,
   })
   return simpleObj
 }

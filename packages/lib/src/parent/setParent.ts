@@ -3,7 +3,7 @@ import { BaseModel } from "../model/BaseModel"
 import { attachToRootStore, detachFromRootStore } from "../rootStore/attachDetach"
 import { isRootStore } from "../rootStore/rootStore"
 import { isTweakedObject } from "../tweaker/core"
-import { failure, inDevMode, isPrimitive } from "../utils"
+import { failure, inDevMode, isPrimitive, isSimple } from "../utils"
 import { objectChildren, objectParents, parentPathEquals, reportParentPathChanged } from "./core"
 import { getParentPath, getRoot, ParentPath } from "./path"
 
@@ -17,7 +17,7 @@ export const setParent = action(
     parentPath: ParentPath<any> | undefined,
     indexChangeAllowed: boolean = false
   ): void => {
-    if (isPrimitive(value)) {
+    if (isPrimitive(value) || isSimple(value)) {
       return
     }
 

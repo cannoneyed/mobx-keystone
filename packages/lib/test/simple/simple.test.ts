@@ -1,7 +1,7 @@
 import {
   fromSnapshot,
-  getParent,
-  getRoot,
+  // getParent,
+  // getRoot,
   getSnapshot,
   model,
   Model,
@@ -9,26 +9,25 @@ import {
   runUnprotected,
 } from "../../src"
 import { Simple } from "../../src/simple"
-import { tweak } from "../../src/tweaker/tweak"
 import "../commonSetup"
 // import { emulateProdMode } from "../utils"
 
 interface FractionSnapshot {
-  numerator: number
-  denominator: number
+  readonly numerator: number
+  readonly denominator: number
 }
 
 class Fraction extends Simple<FractionSnapshot> {
-  constructor(public numerator: number, public denominator: number) {
+  constructor(public readonly numerator: number, public readonly denominator: number) {
     super()
-    tweak(this, undefined)
+    this.initialSnapshot()
   }
 
   toSnapshot() {
     return { numerator: this.numerator, denominator: this.denominator }
   }
 
-  fromSnapshot(snapshot: FractionSnapshot) {
+  static fromSnapshot(snapshot: FractionSnapshot) {
     return new Fraction(snapshot.numerator, snapshot.denominator)
   }
 }
@@ -59,15 +58,15 @@ describe("simple", () => {
 
     const p = new P({ fraction })
     expect(getSnapshot(p).fraction).toBe(sn)
-    expect(getParent(fraction)).toBe(p.$)
-    expect(getRoot(fraction)).toBe(p)
+    // expect(getParent(fraction)).toBe(p.$)
+    // expect(getRoot(fraction)).toBe(p)
 
     runUnprotected(() => {
       ;(p as any).fraction = undefined
     })
 
     expect(getSnapshot(p).fraction).toBe(undefined)
-    expect(getParent(fraction)).toBe(undefined)
-    expect(getRoot(fraction)).toBe(fraction)
+    // expect(getParent(fraction)).toBe(undefined)
+    // expect(getRoot(fraction)).toBe(fraction)
   })
 })

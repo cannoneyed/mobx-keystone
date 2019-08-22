@@ -1,5 +1,6 @@
 import { SnapshotInOfSimple } from "../snapshot"
 import { isPlainObject } from "../utils"
+import { tweak } from "../tweaker/tweak"
 
 /**
  * @ignore
@@ -11,12 +12,18 @@ export const simpleKey = "$simple"
  */
 export abstract class Simple<Serialized extends object> {
   abstract toSnapshot(): Serialized
-  abstract fromSnapshot(snapshot: Serialized): Simple<Serialized>
+
+  // Can't define abstract static methods...
+  // static fromSnapshot(snapshot: Serialized): Simple<Serialized>
+
+  protected initialSnapshot() {
+    tweak(this, undefined)
+  }
 }
 
 /**
- * Checks if an snapshot is an snapshot for a simple class.
  *
+ * Checks if an snapshot is an snapshot for a simple class.
  * @param snapshot
  * @returns
  */
